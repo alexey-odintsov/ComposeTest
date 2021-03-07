@@ -8,8 +8,13 @@ import androidx.compose.material.Surface
 import androidx.lifecycle.ViewModelProvider
 import com.example.composetest.data.MockChatsRepository
 import com.example.composetest.data.source.MockRemoteDataSource
+import com.example.composetest.ui.ChatMessagesScreen
 import com.example.composetest.ui.chatlist.ChatListScreen
 import com.example.composetest.ui.theme.ComposeTestTheme
+
+enum class ScreenState {
+
+}
 
 class MainActivity : AppCompatActivity() {
     private lateinit var viewModel: ChatListViewModel
