@@ -4,7 +4,7 @@ import com.example.composetest.model.Chat
 import com.example.composetest.model.Message
 
 interface ChatsRepository {
-    fun getAllChats(): List<Chat>
-    fun getChatMessages(chatId: Long): List<Message>
-    fun fetchChatInfo(chatId: Long): Chat?
+    suspend fun getAllChats(): List<Chat>
+    suspend fun getChatMessages(chatId: Long): List<Message>
+    suspend fun fetchChatInfo(chatId: Long): Chat?
 }

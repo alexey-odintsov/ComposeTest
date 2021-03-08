@@ -4,8 +4,9 @@ import com.example.composetest.model.Chat
 import com.example.composetest.model.Message
 import com.example.composetest.model.TextContent
 import com.example.composetest.model.User
+import kotlinx.coroutines.delay
 
-class MockRemoteDataSource : RemoteDataSource {
+class MockRemoteDataSource(private val delayMs: Long = 0L) : RemoteDataSource {
 
     private val users = listOf(
         User(
@@ -46,6 +47,14 @@ class MockRemoteDataSource : RemoteDataSource {
         Chat(18, "They know about it..", 1610030134L),
         Chat(19, "Jetpack AMA", 1598518800L),
         Chat(20, "iOS or Android?", 1610030134L),
+        Chat(21, "Experiment ", 1610030134L),
+        Chat(22, "NASA rover where to find it?", 1610030134L),
+        Chat(23, "Wages for living..", 1610030134L),
+        Chat(24, "Best mortgage", 1610030134L),
+        Chat(25, "Nintendo switch pro? when? prices?", 1610030134L),
+        Chat(26, "Condo subleasing", 1610030134L),
+        Chat(27, "Garage sale, friday, 10 am", 1610030134L),
+        Chat(28, "st. Louise health dept", 1610030134L),
     )
 
     private val messages = listOf(
@@ -61,15 +70,18 @@ class MockRemoteDataSource : RemoteDataSource {
     )
 
 
-    override fun getAllChats(): List<Chat> {
+    override suspend fun getAllChats(): List<Chat> {
+        delay(delayMs)
         return chats.sortedByDescending { it.lastUpdated }
     }
 
-    override fun getChatMessage(chatId: Long): List<Message> {
+    override suspend fun getChatMessage(chatId: Long): List<Message> {
+        delay(delayMs)
         return messages.filter { it.chatId == chatId }
     }
 
-    override fun fetchChatInfo(chatId: Long): Chat? {
+    override suspend fun fetchChatInfo(chatId: Long): Chat? {
+        delay(delayMs)
         return chats.find { it.id == chatId }
     }
 }

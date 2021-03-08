@@ -1,5 +1,6 @@
 package com.example.composetest.ui.chatlist
 
+import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -37,6 +38,8 @@ fun ChatListScreen(navController: NavHostController) {
 
 @Composable
 fun ChatsList(navController: NavHostController) {
+    Log.d("ChatMessage", "call")
+
     val viewModel: ChatListViewModel = viewModel()
     viewModel.fetchAllChats()
     val chats: List<Chat> by viewModel.chats.observeAsState(listOf())
@@ -50,12 +53,14 @@ fun ChatsList(navController: NavHostController) {
 
 @Composable
 fun ChatItem(chat: Chat, navController: NavHostController) {
+    Log.d("ChatMessage", "call for ${chat.name}")
+
     val timeString = remember(chat.lastUpdated) { formatDate(chat.lastUpdated) }
 
     Column(modifier = Modifier.clickable { navController.navigate("${Screens.CHAT_MESSAGES}/${chat.id}") }) {
         ConstraintLayout(
             modifier = Modifier
-                .padding(12.dp)
+                .padding(horizontal = 12.dp, vertical = 20.dp)
                 .fillMaxWidth()
         ) {
             val (title, time) = createRefs()

@@ -1,21 +1,24 @@
 package com.example.composetest.ui
 
+import android.util.Log
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.MaterialTheme.typography
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -31,10 +34,12 @@ import dev.chrisbanes.accompanist.coil.CoilImage
 @Composable
 fun ChatMessagesScreen(navController: NavHostController, chatId: Long) {
     val viewModel: ChatListViewModel = viewModel()
-//    viewModel.fetchMessages(chatId)
-//    val messages: List<Message> by viewModel.messages.observeAsState(listOf())
-    val chat = remember("chat:$chatId") { viewModel.fetchChatInfo(chatId) }
-    val messages = remember(chatId) { viewModel.getMessages(chatId) }
+    viewModel.fetchChatInfo(chatId)
+    viewModel.fetchMessages(chatId)
+    val messages: List<Message> by viewModel.messages.observeAsState(listOf())
+    val chat: Chat? by viewModel.chat.observeAsState(null)
+//    val chat = remember("chat:$chatId") { viewModel.fetchChatInfo(chatId) }
+//    val messages = remember(chatId) { viewModel.getMessages(chatId) }
 
     Scaffold(
         topBar = { TopAppBar(title = { Text("${chat?.name}") }) },
@@ -63,7 +68,7 @@ fun ChatsList(messages: List<Message>) {
 
 @Preview
 @Composable
-fun previewMessage() {
+fun PreviewMessage() {
     ChatMessage(
         message = Message(
             12348,
@@ -95,10 +100,11 @@ fun ChatMessage(message: Message) {
             contentDescription = message.user.name,
             modifier = Modifier
                 .constrainAs(_avatar) { start.linkTo(parent.start) }
-                .border(2.dp, Color.Gray, CircleShape)
-                .padding(8.dp)
+                .border(4.dp, Color.Gray, CircleShape)
+                .padding(2.dp)
                 .clip(CircleShape)
-                .size(40.dp)
+                .size(40.dp),
+            contentScale = ContentScale.Crop
         )
         Text(
             text = message.user.name,
@@ -140,9 +146,7 @@ fun Content(modifier: Modifier, content: Content) {
                 modifier = Modifier.padding(8.dp),
                 data = (content as StickerContent).value,
                 contentDescription = null
-            ) {
-
-            }
+            )
         }
     }
 }
