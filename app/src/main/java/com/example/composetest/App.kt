@@ -7,7 +7,7 @@ import com.example.composetest.data.source.MockRemoteDataSource
 
 class App : Application(), RepositoryProvider {
 
-    private val repository = MockChatsRepository(MockRemoteDataSource(1500))
+    private val repository = MockChatsRepository(MockRemoteDataSource(500))
 
     override fun getRepository(): ChatsRepository {
         return repository

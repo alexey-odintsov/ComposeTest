@@ -41,9 +41,9 @@ fun ChatMessagesScreen(
     val viewModel: ChatMessagesViewModel =
         viewModel(factory = ChatMessagesViewModel.Factory(chatId, repositoryProvider))
     val resource: Resource<Chat> by viewModel.chat.observeAsState(Resource.loading(null))
-
+    val title = if (resource.data == null) "" else resource.data?.name
     Scaffold(
-        topBar = { TopAppBar(title = { Text("${resource.data?.name}") }) },
+        topBar = { TopAppBar(title = { Text("$title") }) },
         content = { ChatMessages(resource) })
 }
 
