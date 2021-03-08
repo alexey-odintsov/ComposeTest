@@ -1,29 +1,31 @@
 package com.example.composetest.ui
 
 import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.MaterialTheme.typography
 import androidx.compose.material.Scaffold
+import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.example.composetest.ChatListViewModel
-import com.example.composetest.model.ImageContent
-import com.example.composetest.model.Message
-import com.example.composetest.model.TextContent
-import com.example.composetest.model.User
-import com.example.composetest.ui.chatlist.formatDate
+import com.example.composetest.formatDate
+import com.example.composetest.model.*
 import dev.chrisbanes.accompanist.coil.CoilImage
 
 @Composable
@@ -59,23 +61,78 @@ fun ChatsList(messages: List<Message>) {
     }
 }
 
+@Preview
+@Composable
+fun previewMessage() {
+    ChatMessage(
+        message = Message(
+            12348,
+            2,
+            User(
+                1,
+                "User name",
+                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRjMp1kB4QaKOtXChZshSYDhxyuUaVbq8swiQ&usqp=CAU"
+            ),
+            1612697554L,
+            TextContent("Keanu, have you read the script?")
+        ),
+    )
+}
+
 @Composable
 fun ChatMessage(message: Message) {
-    UserAvatar(message.user)
-    when (message.content) {
-        is TextContent -> Text(message.content.value)
-        is ImageContent -> CoilImage(data = message.content.value, contentDescription = null)
+    val timeString = remember(message.id) { formatDate(message.time) }
+
+    ConstraintLayout(
+        modifier = Modifier
+            .padding(12.dp)
+            .fillMaxWidth()
+    ) {
+        val (_avatar, _name, _time, _message) = createRefs()
+
+        CoilImage(
+            data = message.user.avatar,
+            contentDescription = message.user.name,
+            modifier = Modifier
+                .constrainAs(_avatar) { start.linkTo(parent.start) }
+                .border(2.dp, Color.Gray, CircleShape)
+                .padding(8.dp)
+                .clip(CircleShape)
+                .size(40.dp)
+        )
+        Text(
+            text = message.user.name,
+            modifier = Modifier.constrainAs(_name) { start.linkTo(_avatar.end, 8.dp) },
+            style = TextStyle(fontWeight = FontWeight.Bold)
+        )
+        Text(
+            text = timeString,
+            modifier = Modifier.constrainAs(_time) { end.linkTo(parent.end) }
+        )
+        Content(
+            modifier = Modifier.constrainAs(_message) {
+                start.linkTo(_name.start)
+                top.linkTo(_name.bottom, 8.dp)
+            },
+            content = message.content
+        )
     }
 }
 
 @Composable
-fun UserAvatar(user: User) {
-    CoilImage(
-        data = user.avatar,
-        contentDescription = user.name,
-        modifier = Modifier
-            .height(120.dp)
-            .border(2.dp, Color.Gray, CircleShape)
-            .clip(CircleShape)
-    )
+fun Content(modifier: Modifier, content: Content) {
+    Surface(
+        modifier = modifier,
+        shape = RoundedCornerShape(4.dp),
+        color = Color(0xe0, 0xe0, 0xe0)
+    ) {
+        when (content) {
+            is TextContent -> Text(modifier = Modifier.padding(8.dp), text = content.value)
+            is ImageContent -> CoilImage(
+                modifier = Modifier.padding(8.dp),
+                data = content.value,
+                contentDescription = null
+            )
+        }
+    }
 }

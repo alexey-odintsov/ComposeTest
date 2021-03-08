@@ -15,7 +15,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -23,17 +22,8 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.navigate
 import com.example.composetest.ChatListViewModel
 import com.example.composetest.Screens
+import com.example.composetest.formatDate
 import com.example.composetest.model.Chat
-import java.text.SimpleDateFormat
-import java.util.*
-
-const val DATE_FORMAT_FULL = "d MMM YYYY"
-const val DATE_FORMAT_YEAR = "d MMM"
-const val DATE_FORMAT_WEEK = "EEEE"
-const val DATE_FORMAT_TODAY = "hh:mm"
-const val DAY = 1000 * 60 * 60 * 24L
-const val WEEK = DAY * 7L
-const val YEAR = DAY * 365L
 
 
 @Composable
@@ -79,29 +69,5 @@ fun ChatItem(chat: Chat, navController: NavHostController) {
             )
         }
         Divider()
-    }
-}
-
-fun formatDate(timeStamp: Long): String {
-    val today = Calendar.getInstance()
-    val chatDate = Date(timeStamp * 1000)
-    val diff = today.timeInMillis - timeStamp * 1000
-    return when {
-        diff >= YEAR -> {
-            val dateFormat = SimpleDateFormat(DATE_FORMAT_FULL, Locale.getDefault())
-            dateFormat.format(chatDate)
-        }
-        diff >= WEEK -> {
-            val dateFormat = SimpleDateFormat(DATE_FORMAT_YEAR, Locale.getDefault())
-            dateFormat.format(chatDate)
-        }
-        diff >= DAY -> {
-            val dateFormat = SimpleDateFormat(DATE_FORMAT_WEEK, Locale.getDefault())
-            dateFormat.format(chatDate)
-        }
-        else -> {
-            val dateFormat = SimpleDateFormat(DATE_FORMAT_TODAY, Locale.getDefault())
-            dateFormat.format(chatDate)
-        }
     }
 }
