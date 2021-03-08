@@ -5,5 +5,6 @@ data class Message(
     val chatId: Long,
     val user: User,
     val time: Long,
-    val content: Content
+    val content: Content,
+    val reactions: List<Reaction>
 )

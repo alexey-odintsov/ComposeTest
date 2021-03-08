@@ -5,10 +5,7 @@ import com.example.composetest.DAY
 import com.example.composetest.MINUTE
 import com.example.composetest.HOUR
 import com.example.composetest.YEAR
-import com.example.composetest.model.Chat
-import com.example.composetest.model.Message
-import com.example.composetest.model.TextContent
-import com.example.composetest.model.User
+import com.example.composetest.model.*
 import kotlinx.coroutines.delay
 
 class MockRemoteDataSource(private val delayMs: Long = 0L) : RemoteDataSource {
@@ -43,16 +40,21 @@ class MockRemoteDataSource(private val delayMs: Long = 0L) : RemoteDataSource {
                     1,
                     users[0],
                     today - 12 * MINUTE,
-                    TextContent("Hi Jimmy, howdy?")
+                    TextContent("Hi Jimmy, howdy?"),
+                    listOf(
+                        Reaction("👍", 5),
+                        Reaction("♥️", 1),
+                    )
                 ),
                 Message(
                     ++messageIdx,
                     1,
                     users[0],
                     today - 2L * MINUTE,
-                    TextContent("Wanna go coffee?")
+                    TextContent("Wanna go coffee?"),
+                    listOf()
                 ),
-                Message(++messageIdx, 1, users[1], today, TextContent("Hey dude, sure!")),
+                Message(++messageIdx, 1, users[1], today, TextContent("Hey dude, sure!"), listOf()),
             )
         ),
         Chat(
@@ -62,28 +64,28 @@ class MockRemoteDataSource(private val delayMs: Long = 0L) : RemoteDataSource {
                     2,
                     users[2],
                     yesterday - 2L * HOUR - 30L * MINUTE,
-                    TextContent("Keanu, have you read the script?")
+                    TextContent("Keanu, have you read the script?"), listOf()
                 ),
                 Message(
                     ++messageIdx,
                     2,
                     users[2],
                     yesterday - 2 * HOUR,
-                    TextContent("Hey, answer me")
+                    TextContent("Hey, answer me"), listOf()
                 ),
                 Message(
                     ++messageIdx,
                     2,
                     users[2],
                     yesterday - HOUR - 10 * MINUTE,
-                    TextContent("I'm waiting...")
+                    TextContent("I'm waiting..."), listOf()
                 ),
                 Message(
                     ++messageIdx,
                     2,
                     users[0],
                     yesterday,
-                    TextContent("Nope yet, I will, I promise")
+                    TextContent("Nope yet, I will, I promise"), listOf()
                 ),
             )
         ),
@@ -94,64 +96,72 @@ class MockRemoteDataSource(private val delayMs: Long = 0L) : RemoteDataSource {
                     3,
                     users[0],
                     today - 10 * DAY,
-                    TextContent("Who will win?")
+                    TextContent("Who will win?"), listOf()
                 ),
                 Message(
                     ++messageIdx,
                     3,
                     users[1],
                     today - 8 * DAY - 39 * MINUTE,
-                    TextContent("Not you! )")
+                    TextContent("Not you! )"), listOf()
                 ),
                 Message(
                     ++messageIdx,
                     3,
                     users[1],
                     today - 4 * DAY - 8 * MINUTE,
-                    TextContent("Me? )")
+                    TextContent("Me? )"), listOf()
                 ),
                 Message(
                     ++messageIdx,
                     3,
                     users[0],
                     today - 2 * DAY - 7 * MINUTE,
-                    TextContent("Me? )")
+                    TextContent("Me? )"), listOf()
                 ),
                 Message(
                     ++messageIdx,
                     3,
                     users[2],
                     today - 2 * DAY - 6 * MINUTE,
-                    TextContent("Me? )")
+                    TextContent("Me? )"), listOf()
                 ),
-                Message(++messageIdx, 3, users[1], today - 2 * DAY - 5 * MINUTE, TextContent("No")),
+                Message(
+                    ++messageIdx,
+                    3,
+                    users[1],
+                    today - 2 * DAY - 5 * MINUTE,
+                    TextContent("No"),
+                    listOf()
+                ),
                 Message(
                     ++messageIdx,
                     3,
                     users[1],
                     today - 2 * DAY - 4 * MINUTE,
-                    TextContent("Ha-Ha")
+                    TextContent("Ha-Ha"), listOf()
                 ),
                 Message(
                     ++messageIdx,
                     3,
                     users[1],
                     today - 2 * DAY - 3 * MINUTE,
-                    TextContent("Choke")
+                    TextContent("Choke"), listOf()
                 ),
                 Message(
                     ++messageIdx,
                     3,
                     users[1],
                     today - 2 * DAY - 2 * MINUTE,
-                    TextContent("Catch me")
+                    TextContent("Catch me"), listOf()
                 ),
                 Message(
                     ++messageIdx,
                     3,
                     users[1],
                     today - 25 * MINUTE,
-                    TextContent("Lol hiwnd  jjd rldk gdsrk jhdkj hdkjr dkjh gldkrjh kdrjsh lksjdhglkdrsjdlkjdlrjgdlrsjgdlrsgjhdlrskjgdsgjhrlkjdrj gdsr gd  sdkjrhg kdrsh gkjdrskdsrkhgdsk rkgh  rd")
+                    TextContent("Lol hiwnd  jjd rldk gdsrk jhdkj hdkjr dkjh gldkrjh kdrjsh lksjdhglkdrsjdlkjdlrjgdlrsjgdlrsgjhdlrskjgdsgjhrlkjdrj gdsr gd  sdkjrhg kdrsh gkjdrskdsrkhgdsk rkgh  rd"),
+                    listOf()
                 ),
             )
         ),
@@ -201,7 +211,7 @@ class MockRemoteDataSource(private val delayMs: Long = 0L) : RemoteDataSource {
                 chatId,
                 user,
                 System.currentTimeMillis(),
-                TextContent(text)
+                TextContent(text), listOf()
             )
         )
         chat.lastUpdated = System.currentTimeMillis()

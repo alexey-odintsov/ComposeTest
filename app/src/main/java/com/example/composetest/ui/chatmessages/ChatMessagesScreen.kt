@@ -135,7 +135,7 @@ fun PreviewMessage() {
                 "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRjMp1kB4QaKOtXChZshSYDhxyuUaVbq8swiQ&usqp=CAU"
             ),
             1612697554L,
-            TextContent("Keanu, have you read the script?")
+            TextContent("Keanu, have you read the script?"), listOf()
         ),
     )
 }
