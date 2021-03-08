@@ -1,6 +1,5 @@
 package com.example.composetest
 
-import com.example.composetest.ui.chatlist.*
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -8,14 +7,17 @@ const val DATE_FORMAT_FULL = "d MMM YYYY"
 const val DATE_FORMAT_YEAR = "d MMM"
 const val DATE_FORMAT_WEEK = "EEEE"
 const val DATE_FORMAT_TODAY = "hh:mm"
-const val DAY = 1000 * 60 * 60 * 24L
-const val WEEK = DAY * 7L
-const val YEAR = DAY * 365L
+const val SECOND = 1000L
+const val MINUTE = 60L * SECOND
+const val HOUR = 60L * MINUTE
+const val DAY = 24L * HOUR
+const val WEEK = 7L * DAY
+const val YEAR = 365L * DAY
 
 fun formatDate(timeStamp: Long): String {
     val today = Calendar.getInstance()
-    val chatDate = Date(timeStamp * 1000)
-    val diff = today.timeInMillis - timeStamp * 1000
+    val chatDate = Date(timeStamp)
+    val diff = today.timeInMillis - timeStamp
     return when {
         diff >= YEAR -> {
             val dateFormat = SimpleDateFormat(DATE_FORMAT_FULL, Locale.getDefault())
