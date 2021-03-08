@@ -28,6 +28,24 @@ class MockRemoteDataSource : RemoteDataSource {
     private val chats = listOf(
         Chat(1, "Best friends' chat", 1614965428L),
         Chat(2, "New movie", 1612632628L),
+        Chat(3, "Oscar winner", 1602932628L),
+        Chat(4, "Need work", 1592932628L),
+        Chat(5, "Let's poker today", 1522932628L),
+        Chat(6, "Billy's birthday", 1610030134L),
+        Chat(7, "Holidays", 1610030134L),
+        Chat(8, "Macy's", 1610030134L),
+        Chat(9, "Mac M1, will you buy it?", 1610030134L),
+        Chat(10, "Tesla", 1610030134L),
+        Chat(11, "Mom's club", 1610030134L),
+        Chat(12, "Tom's birthday", 1614848400L),
+        Chat(13, "Biden? really?", 1610030134L),
+        Chat(14, "Car broken, find repair", 1610030134L),
+        Chat(15, "Kids presents", 1610030134L),
+        Chat(16, "Lockdown again (", 1610030134L),
+        Chat(17, "Father's day", 1610030134L),
+        Chat(18, "They know about it..", 1610030134L),
+        Chat(19, "Jetpack AMA", 1598518800L),
+        Chat(20, "iOS or Android?", 1610030134L),
     )
 
     private val messages = listOf(
@@ -38,11 +56,13 @@ class MockRemoteDataSource : RemoteDataSource {
         Message(12349, 2, users[2], 1612698754L, TextContent("Hey, answer me")),
         Message(12350, 2, users[2], 1612699174L, TextContent("I'm waiting...")),
         Message(12351, 2, users[0], 1612708534L, TextContent("Nope yet, I will, I promise")),
+        Message(12352, 3, users[0], 1612935628L, TextContent("Who will win?")),
+        Message(12353, 3, users[1], 1602935728L, TextContent("Not you! )")),
     )
 
 
     override fun getAllChats(): List<Chat> {
-        return chats
+        return chats.sortedByDescending { it.lastUpdated }
     }
 
     override fun getChatMessage(chatId: Long): List<Message> {

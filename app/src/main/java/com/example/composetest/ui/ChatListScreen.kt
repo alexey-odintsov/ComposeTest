@@ -23,11 +23,13 @@ import com.example.composetest.model.Chat
 import java.text.SimpleDateFormat
 import java.util.*
 
-const val DATE_FORMAT_FULL = "YYYY-MM-dd"
-const val DATE_FORMAT_DAY_OF_WEEK = "dd"
+const val DATE_FORMAT_FULL = "d MMM YYYY"
+const val DATE_FORMAT_YEAR = "d MMM"
+const val DATE_FORMAT_WEEK = "EEEE"
 const val DATE_FORMAT_TODAY = "hh:mm"
-const val DAY = 1000 * 60 * 60 * 24
-const val WEEK = DAY * 7
+const val DAY = 1000 * 60 * 60 * 24L
+const val WEEK = DAY * 7L
+const val YEAR = DAY * 365L
 
 
 @Composable
@@ -75,20 +77,24 @@ fun ChatItem(chat: Chat) {
 
 fun formatDate(timeStamp: Long): String {
     val today = Calendar.getInstance()
-    val diff = timeStamp - today.timeInMillis
+    val chatDate = Date(timeStamp * 1000)
+    val diff = today.timeInMillis  - timeStamp * 1000
     return when {
-        diff >= WEEK -> {
+        diff >= YEAR -> {
             val dateFormat = SimpleDateFormat(DATE_FORMAT_FULL, Locale.getDefault())
-            dateFormat.format(timeStamp)
+            dateFormat.format(chatDate)
+        }
+        diff >= WEEK -> {
+            val dateFormat = SimpleDateFormat(DATE_FORMAT_YEAR, Locale.getDefault())
+            dateFormat.format(chatDate)
         }
         diff >= DAY -> {
-            val dateFormat = SimpleDateFormat(DATE_FORMAT_DAY_OF_WEEK, Locale.getDefault())
-            dateFormat.format(timeStamp)
+            val dateFormat = SimpleDateFormat(DATE_FORMAT_WEEK, Locale.getDefault())
+            dateFormat.format(chatDate)
         }
         else -> {
             val dateFormat = SimpleDateFormat(DATE_FORMAT_TODAY, Locale.getDefault())
-            dateFormat.format(timeStamp)
-
+            dateFormat.format(chatDate)
         }
     }
 }
