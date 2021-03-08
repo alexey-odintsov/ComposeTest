@@ -33,11 +33,11 @@ fun ChatMessagesScreen(navController: NavHostController, chatId: Long) {
     val viewModel: ChatListViewModel = viewModel()
 //    viewModel.fetchMessages(chatId)
 //    val messages: List<Message> by viewModel.messages.observeAsState(listOf())
-
+    val chat = remember("chat:$chatId") { viewModel.fetchChatInfo(chatId) }
     val messages = remember(chatId) { viewModel.getMessages(chatId) }
 
     Scaffold(
-        topBar = { TopAppBar(title = { Text("Chat: ") }) },
+        topBar = { TopAppBar(title = { Text("${chat?.name}") }) },
         content = {
             if (messages.isEmpty()) {
                 EmptyChat()

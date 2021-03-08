@@ -68,4 +68,8 @@ class MockRemoteDataSource : RemoteDataSource {
     override fun getChatMessage(chatId: Long): List<Message> {
         return messages.filter { it.chatId == chatId }
     }
+
+    override fun fetchChatInfo(chatId: Long): Chat? {
+        return chats.find { it.id == chatId }
+    }
 }

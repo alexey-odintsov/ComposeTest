@@ -6,4 +6,5 @@ import com.example.composetest.model.Message
 interface RemoteDataSource {
     fun getAllChats(): List<Chat>
     fun getChatMessage(chatId: Long): List<Message>
+    fun fetchChatInfo(chatId: Long): Chat?
 }

@@ -14,4 +14,8 @@ class MockChatsRepository(
     override fun getChatMessages(chatId: Long): List<Message> {
         return remoteDataSource.getChatMessage(chatId)
     }
+
+    override fun fetchChatInfo(chatId: Long): Chat? {
+        return remoteDataSource.fetchChatInfo(chatId)
+    }
 }

@@ -30,6 +30,10 @@ class ChatListViewModel() : ViewModel() {
         return repository.getChatMessages(chatId)
     }
 
+    fun fetchChatInfo(chatId: Long): Chat? {
+        return repository.fetchChatInfo(chatId)
+    }
+
 //    class Factory(private val repository: ChatsRepository) : ViewModelProvider.Factory {
 //        override fun <T : ViewModel?> create(modelClass: Class<T>): T {
 //            if (modelClass.isAssignableFrom(ChatListViewModel::class.java)) {
