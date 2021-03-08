@@ -1,5 +1,7 @@
 package com.example.composetest.ui.chatmessages
 
+import android.util.Log
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -7,10 +9,10 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -20,6 +22,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.constraintlayout.compose.Dimension
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.example.composetest.RepositoryProvider
@@ -42,11 +45,13 @@ fun ChatMessagesScreen(
     val title = if (resource.data == null) "" else resource.data?.name
     Scaffold(
         topBar = { TopAppBar(title = { Text("$title") }) },
-        content = { ChatMessages(resource) })
+        content = { ChatMessages(resource, chatId, viewModel) })
 }
 
 @Composable
-fun ChatMessages(resource: Resource<Chat>) {
+fun ChatMessages(resource: Resource<Chat>, chatId: Long, viewModel: ChatMessagesViewModel) {
+    Log.d("ChatMessagesScreen", "ChatMessages: ${resource.status} ${resource.data}")
+
     when (resource.status) {
         Resource.Status.LOADING -> LoadingProgress()
         Resource.Status.SUCCESS -> {
@@ -58,6 +63,47 @@ fun ChatMessages(resource: Resource<Chat>) {
             }
         }
         Resource.Status.ERROR -> ErrorStub(resource.errorMessage)
+    }
+    if (resource.status == Resource.Status.SUCCESS) {
+        BottomPanel(chatId, viewModel)
+    }
+}
+
+@Composable
+fun BottomPanel(chatId: Long, viewModel: ChatMessagesViewModel) {
+    var text by rememberSaveable { mutableStateOf("") }
+    SendMessagePanel(
+        text = text,
+        onTextChange = { text = it },
+        onMessageSent = {
+            viewModel.sendMessage(1, chatId, text)
+            text = ""
+        })
+}
+
+@Composable
+fun SendMessagePanel(text: String, onTextChange: (String) -> Unit, onMessageSent: () -> Unit) {
+    Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.BottomCenter
+    ) {
+        Row(
+            modifier = Modifier
+                .background(Color.White)
+                .fillMaxWidth()
+        ) {
+            TextField(
+                modifier = Modifier.fillMaxWidth(),
+                value = text,
+                onValueChange = onTextChange,
+                placeholder = { Text("Write a message") },
+                trailingIcon = {
+                    Button(onClick = onMessageSent, enabled = text.isNotBlank()) {
+                        Text("Send")
+                    }
+                }
+            )
+        }
     }
 }
 
@@ -127,7 +173,9 @@ fun ChatMessage(message: Message) {
         Content(
             modifier = Modifier.constrainAs(_message) {
                 start.linkTo(_name.start)
+                end.linkTo(parent.end, 8.dp)
                 top.linkTo(_name.bottom, 8.dp)
+                width = Dimension.fillToConstraints
             },
             content = message.content
         )

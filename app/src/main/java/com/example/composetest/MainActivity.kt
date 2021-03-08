@@ -13,7 +13,6 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         setContent {
             ComposeTestTheme {
                 Surface(color = MaterialTheme.colors.background) {

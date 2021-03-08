@@ -13,4 +13,8 @@ class MockChatsRepository(
     override suspend fun fetchChatInfo(chatId: Long): Chat? {
         return remoteDataSource.fetchChatInfo(chatId)
     }
+
+    override suspend fun sendMessage(userId: Int, chatId: Long, text: String) {
+        remoteDataSource.sendMessage(userId, chatId, text)
+    }
 }

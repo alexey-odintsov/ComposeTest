@@ -1,5 +1,6 @@
 package com.example.composetest.ui.chatmessages
 
+import android.util.Log
 import androidx.lifecycle.*
 import com.example.composetest.RepositoryProvider
 import com.example.composetest.Resource
@@ -20,6 +21,15 @@ class ChatMessagesViewModel(chatId: Long, repositoryProvider: RepositoryProvider
     private fun fetchChatInfo(chatId: Long) {
         viewModelScope.launch(Dispatchers.IO) {
             _chat.postValue(Resource.success(repository.fetchChatInfo(chatId)))
+        }
+    }
+
+    fun sendMessage(userId: Int, chatId: Long, text: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.sendMessage(userId, chatId, text)
+            Log.d("ChatMessagesViewModel", "sendMessage: $userId $chatId $text")
+            _chat.postValue(Resource.loading(null))
+            fetchChatInfo(chatId)
         }
     }
 
