@@ -6,7 +6,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navArgument
 import androidx.navigation.compose.rememberNavController
-import com.example.composetest.ui.ChatMessagesScreen
+import com.example.composetest.ui.chatmessages.ChatMessagesScreen
 import com.example.composetest.ui.chatlist.ChatListScreen
 
 object Screens {

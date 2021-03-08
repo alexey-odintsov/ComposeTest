@@ -1,4 +1,4 @@
-package com.example.composetest.ui
+package com.example.composetest.ui.chatmessages
 
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
@@ -6,10 +6,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
-import androidx.compose.material.TopAppBar
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.remember
@@ -29,7 +26,8 @@ import com.example.composetest.RepositoryProvider
 import com.example.composetest.Resource
 import com.example.composetest.formatDate
 import com.example.composetest.model.*
-import com.example.composetest.ui.chatmessages.ChatMessagesViewModel
+import com.example.composetest.ui.common.ErrorStub
+import com.example.composetest.ui.common.LoadingProgress
 import dev.chrisbanes.accompanist.coil.CoilImage
 
 @Composable
@@ -61,16 +59,6 @@ fun ChatMessages(resource: Resource<Chat>) {
         }
         Resource.Status.ERROR -> ErrorStub(resource.errorMessage)
     }
-}
-
-@Composable
-fun LoadingProgress() {
-    Text(text = "Loading..")
-}
-
-@Composable
-fun ErrorStub(errorMessage: String?) {
-    Text(errorMessage ?: "Unknown error", style = TextStyle(color = Color.Red))
 }
 
 @Composable

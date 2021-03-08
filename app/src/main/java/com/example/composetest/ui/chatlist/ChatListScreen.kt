@@ -16,8 +16,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -28,6 +26,8 @@ import com.example.composetest.Resource
 import com.example.composetest.Screens
 import com.example.composetest.formatDate
 import com.example.composetest.model.Chat
+import com.example.composetest.ui.common.ErrorStub
+import com.example.composetest.ui.common.LoadingProgress
 
 
 @Composable
@@ -57,16 +57,6 @@ fun ChatsList(navController: NavHostController, repositoryProvider: RepositoryPr
         }
         Resource.Status.ERROR -> ErrorStub(errorMessage = resource.errorMessage)
     }
-}
-
-@Composable
-fun LoadingProgress() {
-    Text(text = "Loading..")
-}
-
-@Composable
-fun ErrorStub(errorMessage: String?) {
-    Text(errorMessage ?: "Unknown error", style = TextStyle(color = Color.Red))
 }
 
 @Composable
