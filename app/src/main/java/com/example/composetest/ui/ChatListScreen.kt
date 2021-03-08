@@ -1,5 +1,6 @@
 package com.example.composetest.ui.chatlist
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -18,7 +19,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.navigate
 import com.example.composetest.ChatListViewModel
+import com.example.composetest.Screens
 import com.example.composetest.model.Chat
 import java.text.SimpleDateFormat
 import java.util.*
@@ -33,41 +37,44 @@ const val YEAR = DAY * 365L
 
 
 @Composable
-fun ChatListScreen() {
+fun ChatListScreen(navController: NavHostController) {
     Scaffold(
         topBar = { TopAppBar(title = { Text("Chats") }) },
         content = {
-            ChatsList()
+            ChatsList(navController)
         })
 }
 
-@Preview
 @Composable
-fun ChatsList() {
+fun ChatsList(navController: NavHostController) {
     val viewModel: ChatListViewModel = viewModel()
+    viewModel.fetchAllChats()
     val chats: List<Chat> by viewModel.chats.observeAsState(listOf())
 
     LazyColumn {
         items(chats) { chat ->
-            ChatItem(chat)
+            ChatItem(chat, navController)
         }
     }
 }
 
 @Composable
-fun ChatItem(chat: Chat) {
+fun ChatItem(chat: Chat, navController: NavHostController) {
     val timeString = remember(chat.lastUpdated) { formatDate(chat.lastUpdated) }
 
-    Column() {
-        ConstraintLayout(modifier = Modifier
-            .padding(12.dp)
-            .fillMaxWidth()) {
+    Column(modifier = Modifier.clickable { navController.navigate("${Screens.CHAT_MESSAGES}/${chat.id}") }) {
+        ConstraintLayout(
+            modifier = Modifier
+                .padding(12.dp)
+                .fillMaxWidth()
+        ) {
             val (title, time) = createRefs()
             Text(
                 text = chat.name,
                 modifier = Modifier.constrainAs(title) { start.linkTo(parent.start) }
             )
-            Text(text = timeString,
+            Text(
+                text = timeString,
                 modifier = Modifier.constrainAs(time) { end.linkTo(parent.end) }
             )
         }
@@ -78,7 +85,7 @@ fun ChatItem(chat: Chat) {
 fun formatDate(timeStamp: Long): String {
     val today = Calendar.getInstance()
     val chatDate = Date(timeStamp * 1000)
-    val diff = today.timeInMillis  - timeStamp * 1000
+    val diff = today.timeInMillis - timeStamp * 1000
     return when {
         diff >= YEAR -> {
             val dateFormat = SimpleDateFormat(DATE_FORMAT_FULL, Locale.getDefault())

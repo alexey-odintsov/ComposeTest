@@ -8,13 +8,7 @@ import androidx.compose.material.Surface
 import androidx.lifecycle.ViewModelProvider
 import com.example.composetest.data.MockChatsRepository
 import com.example.composetest.data.source.MockRemoteDataSource
-import com.example.composetest.ui.ChatMessagesScreen
-import com.example.composetest.ui.chatlist.ChatListScreen
 import com.example.composetest.ui.theme.ComposeTestTheme
-
-enum class ScreenState {
-
-}
 
 class MainActivity : AppCompatActivity() {
     private lateinit var viewModel: ChatListViewModel
@@ -23,15 +17,13 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        viewModel = ViewModelProvider(
-            this,
-            ChatListViewModel.Factory(repository)
-        ).get(ChatListViewModel::class.java)
+        viewModel = ViewModelProvider(this).get(ChatListViewModel::class.java)
+
 
         setContent {
             ComposeTestTheme {
                 Surface(color = MaterialTheme.colors.background) {
-                    ChatListScreen()
+                    NavGraph()
                 }
             }
         }

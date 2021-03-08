@@ -11,30 +11,43 @@ import androidx.compose.material.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavHostController
 import com.example.composetest.ChatListViewModel
 import com.example.composetest.model.ImageContent
 import com.example.composetest.model.Message
 import com.example.composetest.model.TextContent
 import com.example.composetest.model.User
+import com.example.composetest.ui.chatlist.formatDate
 import dev.chrisbanes.accompanist.coil.CoilImage
 
-@Preview
 @Composable
-fun ChatMessagesScreen() {
+fun ChatMessagesScreen(navController: NavHostController, chatId: Long) {
     val viewModel: ChatListViewModel = viewModel()
-    val messages: List<Message> by viewModel.messages.observeAsState(listOf())
+//    viewModel.fetchMessages(chatId)
+//    val messages: List<Message> by viewModel.messages.observeAsState(listOf())
+
+    val messages = remember(chatId) { viewModel.getMessages(chatId) }
 
     Scaffold(
-        topBar = { TopAppBar(title = { Text("Chats") }) },
+        topBar = { TopAppBar(title = { Text("Chat: ") }) },
         content = {
-            ChatsList(messages)
+            if (messages.isEmpty()) {
+                EmptyChat()
+            } else {
+                ChatsList(messages)
+            }
         })
+}
+
+@Composable
+fun EmptyChat() {
+    Text(text = "There is no messages yet.")
 }
 
 @Composable
