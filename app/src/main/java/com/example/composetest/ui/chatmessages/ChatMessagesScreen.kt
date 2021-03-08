@@ -5,6 +5,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -149,7 +150,7 @@ fun ChatMessage(message: Message) {
             .padding(12.dp)
             .fillMaxWidth()
     ) {
-        val (_avatar, _name, _time, _message) = createRefs()
+        val (_avatar, _name, _time, _message, _reactions) = createRefs()
 
         CoilImage(
             data = message.user.avatar,
@@ -180,6 +181,25 @@ fun ChatMessage(message: Message) {
             },
             content = message.content
         )
+        if (message.reactions.isNotEmpty()) {
+            LazyRow(modifier = Modifier.constrainAs(_reactions) {
+                start.linkTo(_name.start)
+                top.linkTo(_message.bottom, 8.dp)
+                width = Dimension.wrapContent
+            }) {
+                items(message.reactions) { reaction ->
+                    Reaction(reaction)
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun Reaction(reaction: Reaction) {
+    Row(modifier = Modifier.padding(4.dp, 2.dp)) {
+        Text(reaction.emoji)
+        Text(reaction.count.toString())
     }
 }
 
