@@ -1,5 +1,6 @@
 package com.example.composetest.data.source
 
+import android.util.Log
 import com.example.composetest.DAY
 import com.example.composetest.MINUTE
 import com.example.composetest.HOUR
@@ -31,6 +32,7 @@ class MockRemoteDataSource(private val delayMs: Long = 0L) : RemoteDataSource {
             "https://im0-tub-ru.yandex.net/i?id=7ba8d5c1880ddf47e8abcd5d8b0d87ed&ref=rim&n=33&w=480&h=240"
         ),
     )
+
 
     private val chats = listOf(
         Chat(
@@ -179,12 +181,11 @@ class MockRemoteDataSource(private val delayMs: Long = 0L) : RemoteDataSource {
         Chat(27, "Garage sale, friday, 10 am", today - YEAR, mutableListOf()),
         Chat(28, "st. Louise health dept", today - YEAR - 40 * DAY, mutableListOf()),
     )
-
-
-    override suspend fun getAllChats(): List<Chat> {
-        delay(delayMs)
-        return chats.sortedByDescending { it.lastUpdated }
-    }
+    private val chatsPages = listOf(
+        chats.subList(0, 9),
+        chats.subList(10, 19),
+        chats.subList(20, chats.size),
+    )
 
     override suspend fun fetchChatInfo(chatId: Long): Chat? {
         delay(delayMs)
@@ -204,5 +205,15 @@ class MockRemoteDataSource(private val delayMs: Long = 0L) : RemoteDataSource {
             )
         )
         chat.lastUpdated = System.currentTimeMillis()
+    }
+
+    override suspend fun getChats(page: Int): List<Chat> {
+        Log.d("MockRemoteDataSource", "page: $page")
+        delay(delayMs)
+        return if (page < chatsPages.size) {
+            chatsPages[page]
+        } else {
+            emptyList()
+        }
     }
 }

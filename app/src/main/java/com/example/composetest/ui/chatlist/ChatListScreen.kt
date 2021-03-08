@@ -6,14 +6,11 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Divider
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -21,14 +18,15 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.navigate
+import androidx.paging.LoadState
+import androidx.paging.compose.LazyPagingItems
+import androidx.paging.compose.collectAsLazyPagingItems
+import androidx.paging.compose.itemsIndexed
 import com.example.composetest.RepositoryProvider
-import com.example.composetest.Resource
 import com.example.composetest.Screens
 import com.example.composetest.formatDate
 import com.example.composetest.model.Chat
-import com.example.composetest.ui.common.ErrorStub
 import com.example.composetest.ui.common.LoadingProgress
-
 
 @Composable
 fun ChatListScreen(navController: NavHostController, repositoryProvider: RepositoryProvider) {
@@ -43,19 +41,26 @@ fun ChatListScreen(navController: NavHostController, repositoryProvider: Reposit
 fun ChatsList(navController: NavHostController, repositoryProvider: RepositoryProvider) {
     val viewModel: ChatListViewModel =
         viewModel(factory = ChatListViewModel.Factory(repositoryProvider))
-    val resource: Resource<List<Chat>> by viewModel.chats.observeAsState(Resource.loading(null))
 
-    when (resource.status) {
-        Resource.Status.LOADING -> LoadingProgress()
-        Resource.Status.SUCCESS -> {
-            val chatsItems = resource.data as List<Chat>
-            LazyColumn {
-                items(chatsItems) { chat ->
-                    ChatItem(chat, navController)
+    val lazyPagingItems: LazyPagingItems<Chat> =
+        viewModel.chatsFlow.collectAsLazyPagingItems()
+
+    LazyColumn {
+        itemsIndexed(lazyPagingItems) { page, chat ->
+            if (chat != null) {
+                ChatItem(chat, navController)
+            }
+        }
+        lazyPagingItems.apply {
+            when {
+                loadState.refresh is LoadState.Loading -> item {
+                    LoadingProgress()
+                }
+                loadState.append is LoadState.Loading -> {
+                    item { LoadingProgress() }
                 }
             }
         }
-        Resource.Status.ERROR -> ErrorStub(errorMessage = resource.errorMessage)
     }
 }
 

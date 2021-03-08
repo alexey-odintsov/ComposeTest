@@ -1,30 +1,19 @@
 package com.example.composetest.ui.chatlist
 
-import android.util.Log
-import androidx.lifecycle.*
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.paging.*
 import com.example.composetest.RepositoryProvider
-import com.example.composetest.Resource
+import com.example.composetest.data.ChatsRepository
 import com.example.composetest.model.Chat
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.Flow
 
 class ChatListViewModel(repositoryProvider: RepositoryProvider) : ViewModel() {
     private var repository = repositoryProvider.getRepository()
 
-    private val _chats = MutableLiveData<Resource<List<Chat>>>()
-    val chats: LiveData<Resource<List<Chat>>> = _chats
-
-    init {
-        fetchAllChats()
-    }
-
-    private fun fetchAllChats() {
-        Log.d("MainViewModel", "fetchAllChats")
-        _chats.value = Resource.loading(null)
-        viewModelScope.launch(Dispatchers.IO) {
-            _chats.postValue(Resource.success(repository.getAllChats()))
-        }
-    }
+    val chatsFlow: Flow<PagingData<Chat>> = Pager(PagingConfig(pageSize = 10)) {
+        ChatsPagingSource(repository)
+    }.flow
 
     class Factory(private val repositoryProvider: RepositoryProvider) :
         ViewModelProvider.Factory {
@@ -35,4 +24,25 @@ class ChatListViewModel(repositoryProvider: RepositoryProvider) : ViewModel() {
             throw IllegalArgumentException("Unknown ViewModel class")
         }
     }
+}
+
+class ChatsPagingSource(private val repository: ChatsRepository) : PagingSource<Int, Chat>() {
+    override fun getRefreshKey(state: PagingState<Int, Chat>): Int? {
+        return state.anchorPosition
+    }
+
+    override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Chat> {
+        return try {
+            val page = params.key ?: 0
+            val response = repository.getChats(page)
+            LoadResult.Page(
+                data = response,
+                prevKey = if (page == 1) null else page - 1,
+                nextKey = if (response.isEmpty()) null else page + 1
+            )
+        } catch (e: Exception) {
+            LoadResult.Error(e)
+        }
+    }
+
 }
