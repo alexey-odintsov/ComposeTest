@@ -1,6 +1,5 @@
 package com.example.composetest.ui
 
-import android.util.Log
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -26,30 +25,52 @@ import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
-import com.example.composetest.ChatListViewModel
+import com.example.composetest.RepositoryProvider
+import com.example.composetest.Resource
 import com.example.composetest.formatDate
 import com.example.composetest.model.*
+import com.example.composetest.ui.chatmessages.ChatMessagesViewModel
 import dev.chrisbanes.accompanist.coil.CoilImage
 
 @Composable
-fun ChatMessagesScreen(navController: NavHostController, chatId: Long) {
-    val viewModel: ChatListViewModel = viewModel()
-    viewModel.fetchChatInfo(chatId)
-    viewModel.fetchMessages(chatId)
-    val messages: List<Message> by viewModel.messages.observeAsState(listOf())
-    val chat: Chat? by viewModel.chat.observeAsState(null)
-//    val chat = remember("chat:$chatId") { viewModel.fetchChatInfo(chatId) }
-//    val messages = remember(chatId) { viewModel.getMessages(chatId) }
+fun ChatMessagesScreen(
+    navController: NavHostController,
+    chatId: Long,
+    repositoryProvider: RepositoryProvider
+) {
+    val viewModel: ChatMessagesViewModel =
+        viewModel(factory = ChatMessagesViewModel.Factory(chatId, repositoryProvider))
+    val resource: Resource<Chat> by viewModel.chat.observeAsState(Resource.loading(null))
 
     Scaffold(
-        topBar = { TopAppBar(title = { Text("${chat?.name}") }) },
-        content = {
-            if (messages.isEmpty()) {
+        topBar = { TopAppBar(title = { Text("${resource.data?.name}") }) },
+        content = { ChatMessages(resource) })
+}
+
+@Composable
+fun ChatMessages(resource: Resource<Chat>) {
+    when (resource.status) {
+        Resource.Status.LOADING -> LoadingProgress()
+        Resource.Status.SUCCESS -> {
+            val chat = resource.data as Chat
+            if (chat.messages.isEmpty()) {
                 EmptyChat()
             } else {
-                ChatsList(messages)
+                ChatsList(chat.messages)
             }
-        })
+        }
+        Resource.Status.ERROR -> ErrorStub(resource.errorMessage)
+    }
+}
+
+@Composable
+fun LoadingProgress() {
+    Text(text = "Loading..")
+}
+
+@Composable
+fun ErrorStub(errorMessage: String?) {
+    Text(errorMessage ?: "Unknown error", style = TextStyle(color = Color.Red))
 }
 
 @Composable

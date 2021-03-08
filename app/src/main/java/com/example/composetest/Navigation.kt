@@ -15,7 +15,7 @@ object Screens {
 }
 
 @Composable
-fun NavGraph(startDestination: String = Screens.CHAT_LIST) {
+fun NavGraph(startDestination: String = Screens.CHAT_LIST, repositoryProvider: RepositoryProvider) {
     val navController = rememberNavController()
 
     NavHost(
@@ -23,7 +23,7 @@ fun NavGraph(startDestination: String = Screens.CHAT_LIST) {
         startDestination = startDestination
     ) {
         composable(Screens.CHAT_LIST) {
-            ChatListScreen(navController)
+            ChatListScreen(navController, repositoryProvider)
         }
 
         composable(
@@ -33,6 +33,7 @@ fun NavGraph(startDestination: String = Screens.CHAT_LIST) {
             val arguments = requireNotNull(backStackEntry.arguments)
             ChatMessagesScreen(navController,
                 chatId = arguments.getLong("chatId"),
+                repositoryProvider
             )
         }
     }

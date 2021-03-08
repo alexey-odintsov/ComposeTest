@@ -5,7 +5,7 @@ import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
-import androidx.lifecycle.ViewModelProvider
+import com.example.composetest.ui.chatlist.ChatListViewModel
 import com.example.composetest.ui.theme.ComposeTestTheme
 
 class MainActivity : AppCompatActivity() {
@@ -14,12 +14,10 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        viewModel = ViewModelProvider(this).get(ChatListViewModel::class.java)
-
         setContent {
             ComposeTestTheme {
                 Surface(color = MaterialTheme.colors.background) {
-                    NavGraph()
+                    NavGraph(repositoryProvider = (application as App) as RepositoryProvider)
                 }
             }
         }

@@ -27,57 +27,71 @@ class MockRemoteDataSource(private val delayMs: Long = 0L) : RemoteDataSource {
     )
 
     private val chats = listOf(
-        Chat(1, "Best friends' chat", 1614965428L),
-        Chat(2, "New movie", 1612632628L),
-        Chat(3, "Oscar winner", 1602932628L),
-        Chat(4, "Need work", 1592932628L),
-        Chat(5, "Let's poker today", 1522932628L),
-        Chat(6, "Billy's birthday", 1610030134L),
-        Chat(7, "Holidays", 1610030134L),
-        Chat(8, "Macy's", 1610030134L),
-        Chat(9, "Mac M1, will you buy it?", 1610030134L),
-        Chat(10, "Tesla", 1610030134L),
-        Chat(11, "Mom's club", 1610030134L),
-        Chat(12, "Tom's birthday", 1614848400L),
-        Chat(13, "Biden? really?", 1610030134L),
-        Chat(14, "Car broken, find repair", 1610030134L),
-        Chat(15, "Kids presents", 1610030134L),
-        Chat(16, "Lockdown again (", 1610030134L),
-        Chat(17, "Father's day", 1610030134L),
-        Chat(18, "They know about it..", 1610030134L),
-        Chat(19, "Jetpack AMA", 1598518800L),
-        Chat(20, "iOS or Android?", 1610030134L),
-        Chat(21, "Experiment ", 1610030134L),
-        Chat(22, "NASA rover where to find it?", 1610030134L),
-        Chat(23, "Wages for living..", 1610030134L),
-        Chat(24, "Best mortgage", 1610030134L),
-        Chat(25, "Nintendo switch pro? when? prices?", 1610030134L),
-        Chat(26, "Condo subleasing", 1610030134L),
-        Chat(27, "Garage sale, friday, 10 am", 1610030134L),
-        Chat(28, "st. Louise health dept", 1610030134L),
-    )
-
-    private val messages = listOf(
-        Message(12345, 1, users[0], 1614965428L, TextContent("Hi Jimmy, howdy?")),
-        Message(12346, 1, users[0], 1612632634L, TextContent("Wanna go coffee?")),
-        Message(12347, 1, users[1], 1612632754L, TextContent("Hey dude, sure!")),
-        Message(12348, 2, users[2], 1612697554L, TextContent("Keanu, have you read the script?")),
-        Message(12349, 2, users[2], 1612698754L, TextContent("Hey, answer me")),
-        Message(12350, 2, users[2], 1612699174L, TextContent("I'm waiting...")),
-        Message(12351, 2, users[0], 1612708534L, TextContent("Nope yet, I will, I promise")),
-        Message(12352, 3, users[0], 1612935628L, TextContent("Who will win?")),
-        Message(12353, 3, users[1], 1602935728L, TextContent("Not you! )")),
+        Chat(
+            1, "Best friends' chat", 1614965428L,
+            listOf(
+                Message(12345, 1, users[0], 1614965428L, TextContent("Hi Jimmy, howdy?")),
+                Message(12346, 1, users[0], 1612632634L, TextContent("Wanna go coffee?")),
+                Message(12347, 1, users[1], 1612632754L, TextContent("Hey dude, sure!")),
+            )
+        ),
+        Chat(
+            2, "New movie", 1612632628L, listOf(
+                Message(
+                    12348,
+                    2,
+                    users[2],
+                    1612697554L,
+                    TextContent("Keanu, have you read the script?")
+                ),
+                Message(12349, 2, users[2], 1612698754L, TextContent("Hey, answer me")),
+                Message(12350, 2, users[2], 1612699174L, TextContent("I'm waiting...")),
+                Message(
+                    12351,
+                    2,
+                    users[0],
+                    1612708534L,
+                    TextContent("Nope yet, I will, I promise")
+                ),
+            )
+        ),
+        Chat(
+            3, "Oscar winner", 1602932628L, listOf(
+                Message(12352, 3, users[0], 1612935628L, TextContent("Who will win?")),
+                Message(12353, 3, users[1], 1602935728L, TextContent("Not you! )")),
+            )
+        ),
+        Chat(4, "Need work", 1592932628L, listOf()),
+        Chat(5, "Let's poker today", 1522932628L, listOf()),
+        Chat(6, "Billy's birthday", 1610030134L, listOf()),
+        Chat(7, "Holidays", 1610030134L, listOf()),
+        Chat(8, "Macy's", 1610030134L, listOf()),
+        Chat(9, "Mac M1, will you buy it?", 1610030134L, listOf()),
+        Chat(10, "Tesla", 1610030134L, listOf()),
+        Chat(11, "Mom's club", 1610030134L, listOf()),
+        Chat(12, "Tom's birthday", 1614848400L, listOf()),
+        Chat(13, "Biden? really?", 1610030134L, listOf()),
+        Chat(14, "Car broken, find repair", 1610030134L, listOf()),
+        Chat(15, "Kids presents", 1610030134L, listOf()),
+        Chat(16, "Lockdown again (", 1610030134L, listOf()),
+        Chat(17, "Father's day", 1610030134L, listOf()),
+        Chat(18, "They know about it..", 1610030134L, listOf()),
+        Chat(19, "Jetpack AMA", 1598518800L, listOf()),
+        Chat(20, "iOS or Android?", 1610030134L, listOf()),
+        Chat(21, "Experiment ", 1610030134L, listOf()),
+        Chat(22, "NASA rover where to find it?", 1610030134L, listOf()),
+        Chat(23, "Wages for living..", 1610030134L, listOf()),
+        Chat(24, "Best mortgage", 1610030134L, listOf()),
+        Chat(25, "Nintendo switch pro? when? prices?", 1610030134L, listOf()),
+        Chat(26, "Condo subleasing", 1610030134L, listOf()),
+        Chat(27, "Garage sale, friday, 10 am", 1610030134L, listOf()),
+        Chat(28, "st. Louise health dept", 1610030134L, listOf()),
     )
 
 
     override suspend fun getAllChats(): List<Chat> {
         delay(delayMs)
         return chats.sortedByDescending { it.lastUpdated }
-    }
-
-    override suspend fun getChatMessage(chatId: Long): List<Message> {
-        delay(delayMs)
-        return messages.filter { it.chatId == chatId }
     }
 
     override suspend fun fetchChatInfo(chatId: Long): Chat? {
