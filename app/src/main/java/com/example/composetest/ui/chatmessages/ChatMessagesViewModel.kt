@@ -28,7 +28,7 @@ class ChatMessagesViewModel(chatId: Long, repositoryProvider: RepositoryProvider
         viewModelScope.launch(Dispatchers.IO) {
             repository.sendMessage(userId, chatId, text)
             Log.d("ChatMessagesViewModel", "sendMessage: $userId $chatId $text")
-            _chat.postValue(Resource.loading(null))
+            _chat.postValue(Resource.updating(_chat.value?.data))// trick to update Composable - is to change state
             fetchChatInfo(chatId)
         }
     }

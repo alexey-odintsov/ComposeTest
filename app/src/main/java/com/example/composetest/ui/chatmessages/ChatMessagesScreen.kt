@@ -54,6 +54,7 @@ fun ChatMessages(resource: Resource<Chat>, chatId: Long, viewModel: ChatMessages
 
     when (resource.status) {
         Resource.Status.LOADING -> LoadingProgress()
+        Resource.Status.UPDATING,
         Resource.Status.SUCCESS -> {
             val chat = resource.data as Chat
             if (chat.messages.isEmpty()) {
