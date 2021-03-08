@@ -126,13 +126,23 @@ fun Content(modifier: Modifier, content: Content) {
         shape = RoundedCornerShape(4.dp),
         color = Color(0xe0, 0xe0, 0xe0)
     ) {
-        when (content) {
-            is TextContent -> Text(modifier = Modifier.padding(8.dp), text = content.value)
-            is ImageContent -> CoilImage(
+        when (content.type) {
+            ContentType.TEXT -> Text(
                 modifier = Modifier.padding(8.dp),
-                data = content.value,
+                text = (content as TextContent).value
+            )
+            ContentType.IMAGE -> CoilImage(
+                modifier = Modifier.padding(8.dp),
+                data = (content as ImageContent).value,
                 contentDescription = null
             )
+            ContentType.STICKER -> CoilImage(
+                modifier = Modifier.padding(8.dp),
+                data = (content as StickerContent).value,
+                contentDescription = null
+            ) {
+
+            }
         }
     }
 }
